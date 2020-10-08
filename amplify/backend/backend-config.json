@@ -1,1 +1,10 @@
-{}
+{
+  "auth": {
+    "vueamplifytestc0d0bfedc0d0bfed": {
+      "service": "Cognito",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [],
+      "customAuth": false
+    }
+  }
+}
