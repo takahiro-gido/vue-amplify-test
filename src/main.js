@@ -8,6 +8,12 @@ Amplify.configure({
     region: "ap-northeast-1",
     userPoolId: "ap-northeast-1_kybq3xDDy",
     userPoolWebClientId: "1n81qmdnhgqb4kohcjgh2muv22"
+  },
+  API: {
+    aws_appsync_graphqlEndpoint:
+      "https://euf3bubejfapvlsjhmpqt6tdrq.appsync-api.ap-northeast-1.amazonaws.com/graphql",
+    aws_appsync_region: "ap-northeast-1",
+    aws_appsync_authenticationType: "AWS_IAM"
   }
 });
 Vue.use(AmplifyPlugin, AmplifyModules);
