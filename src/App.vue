@@ -7,6 +7,8 @@
       <amplify-sign-out></amplify-sign-out>
       <div>Hello, {{ user.username }}</div>
     </div>
+    <div>Governments Query Result:{{ governmentsQueryResult }}</div>
+    <div>MyLists Query Result:{{ myListsQueryResult }}</div>
   </div>
 </template>
 <script>
@@ -25,7 +27,30 @@ export default {
     }
     // 認証ステータスが変わった時に呼び出されるイベントを登録
     AmplifyEventBus.$on("authState", async info => {
-      const query = `{
+      if (info === "signedIn") {
+        this.authState = "signedIn";
+        this.user = await Auth.currentAuthenticatedUser();
+      } else {
+        this.authState = undefined;
+        this.user = undefined;
+      }
+      await this.tryGraphQLQuery();
+    });
+  },
+  async created() {
+    await this.tryGraphQLQuery();
+  },
+  data() {
+    return {
+      user: undefined,
+      authState: undefined,
+      governmentsQueryResult: undefined,
+      myListsQueryResult: undefined
+    };
+  },
+  methods: {
+    tryGraphQLQuery: async function() {
+      const governmentsQuery = `{
         Governments {
           id,
           name,
@@ -33,34 +58,23 @@ export default {
           updatedAt
         }
       }`;
-      if (info === "signedIn") {
-        this.authState = "signedIn";
-        this.user = await Auth.currentAuthenticatedUser();
-
-        await Auth.currentCredentials().then(credentials =>
-          console.log("Auth credentials:", credentials)
-        );
-        await API.graphql(graphqlOperation(query)).then(items =>
-          console.log("Auth items:", items)
-        );
-      } else {
-        this.authState = undefined;
-        this.user = undefined;
-
-        await Auth.currentCredentials().then(credentials =>
-          console.log("UnAuth credentials:", credentials)
-        );
-        await API.graphql(graphqlOperation(query)).then(items =>
-          console.log("UnAuth items:", items)
-        );
-      }
-    });
-  },
-  data() {
-    return {
-      user: undefined,
-      authState: undefined
-    };
+      const myListsQuery = `{
+        MyLists {
+          id,
+          name,
+          createdAt,
+          updatedAt
+        }
+      }`;
+      // 行政機関一覧取得（未認証ユーザ、認証ユーザの両方に許可）
+      await API.graphql(graphqlOperation(governmentsQuery))
+        .then(items => (this.governmentsQueryResult = JSON.stringify(items)))
+        .catch(error => (this.governmentsQueryResult = JSON.stringify(error)));
+      // マイリスト一覧取得（未認証ユーザには不許可、認証ユーザにのみ許可）
+      await API.graphql(graphqlOperation(myListsQuery))
+        .then(items => (this.myListsQueryResult = JSON.stringify(items)))
+        .catch(error => (this.myListsQueryResult = JSON.stringify(error)));
+    }
   },
   beforeDestroy() {
     return onAuthUIStateChange;
