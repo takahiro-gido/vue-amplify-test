@@ -4,10 +4,10 @@ import Amplify, * as AmplifyModules from "aws-amplify";
 import { AmplifyPlugin } from "aws-amplify-vue";
 Amplify.configure({
   Auth: {
-    identityPoolId: "ap-northeast-1:9b5743e3-6443-4017-bf56-c55c2477951e",
+    identityPoolId: "ap-northeast-1:1c0c2a4c-cea8-40fe-abb7-af01e1755cbc",
     region: "ap-northeast-1",
-    userPoolId: "ap-northeast-1_h6sr4o6Dy",
-    userPoolWebClientId: "4a971pg3o6pulnvelk2q285u5d"
+    userPoolId: "ap-northeast-1_YDVFXKzcL",
+    userPoolWebClientId: "4knuc5i51sq9ercpn2n59ebe5t"
   },
   API: {
     aws_appsync_graphqlEndpoint:
